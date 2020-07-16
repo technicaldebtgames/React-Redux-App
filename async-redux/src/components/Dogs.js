@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {connect} from 'react-redux';
 import {fetchDogs} from '../actions/actions';
 import './Dogs.css';
@@ -7,37 +7,40 @@ const Dogs = props => {
 
     // the dog img url to use, changed below in the timer and initially when props.dogs loads
     const [aDog, setADog] = useState('');
-    const [requestNewDogs, setRequestNewDogs] = useState(true);
+    const requestNewDogs = useRef(true); // did we ever go over useRef? I don't remember.
+    const dogCounter = useRef(0);
 
     // initial api call
     useEffect(() => {
-        if(requestNewDogs){
+        if(requestNewDogs.current === true){
             props.fetchDogs();
             console.log('initial fetchDogs');
-            setRequestNewDogs(false);
+            requestNewDogs.current = false;
         }
-    }, [requestNewDogs]);
+    }, [requestNewDogs.current]);
 
     // set initial selected dog once api call is finished
     useEffect(() => {
         if(props.dogs.length > 0) {
-            setADog(props.dogs[Math.floor(Math.random() * 50)]);
+            setADog(props.dogs[dogCounter.current]);
+            dogCounter.current = dogCounter.current + 1;
             console.log('set first dog when props populates');
         };
     }, [props.dogs]);
 
-    // set a timer and change our selected dog
+    // set a timer and change our selected dog, and when we reach the end, request a new set from api
     useEffect(() => {
         if(aDog){
             const timer = setTimeout(() => {
-                let newDog = props.dogs[Math.floor(Math.random() * 50)];
-                while (newDog === aDog) {
-                    newDog = props.dogs[Math.floor(Math.random() * 50)];
-                };
-                setADog(newDog);
+                setADog(props.dogs[dogCounter.current]);
+                dogCounter.current = dogCounter.current + 1;
                 console.log('set a new dog in timer');
-            }, 5000);
-            return () => clearTimeout(timer);
+                if(dogCounter.current === 50){ // figure out how to not make this suck
+                    dogCounter.current = 0;
+                    requestNewDogs.current = true;
+                };
+            }, 1000);
+            return () => clearTimeout(timer); // clear the timer once it runs
         }
     }, [aDog]);
 
