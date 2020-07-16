@@ -8,6 +8,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// initialize a store
 const store = createStore(reducer, applyMiddleware(thunk));
 
 ReactDOM.render(

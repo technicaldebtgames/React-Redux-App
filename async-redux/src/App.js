@@ -5,7 +5,7 @@ import './App.css';
 function App() {
   return (
     <div className="app-wrapper">
-      <h1>Welcome to the dogallery.</h1>
+      <h1>WELCOME TO THE DOGALLERY</h1>
       <Dogs />
     </div>
   );

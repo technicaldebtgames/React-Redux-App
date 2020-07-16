@@ -1,5 +1,6 @@
 import {FETCH_DOGS_START, FETCH_DOGS_SUCCESS, FETCH_DOGS_FAILURE} from '../actions/actions';
 
+// clean state
 const initialState = {
     isLoading: false,
     dogs: [],
